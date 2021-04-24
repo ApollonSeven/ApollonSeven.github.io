@@ -8,8 +8,10 @@ let windowHalfX = window.innerWidth / 2;
 let windowHalfY = window.innerHeight / 2;
 
 let object;
+let mouseX = 0,
+    mouseY = 0;
 
-let plane, plane2;
+let plane, plane2, pivot;
 
 init();
 animate();
@@ -27,18 +29,24 @@ function init() {
     // scene
     scene = new THREE.Scene();
 
-    const ambientLight = new THREE.AmbientLight(0xcccccc, 1);
+    const ambientLight = new THREE.AmbientLight(0xcccccc, 0.9);
     scene.add(ambientLight);
+
+    const pointLight = new THREE.PointLight(0xffffff, 0.05);
+    camera.add(pointLight);
 
     scene.add(camera);
 
     // manager
     function loadModel() {
         object.children[0].material.side = THREE.DoubleSide;
-        object.position.x = -95;
-        object.position.y = 95;
         object.scale.y = -1;
-        scene.add(object);
+        var box = new THREE.Box3().setFromObject(object);
+        box.center(object.position); // this re-sets the mesh position
+        object.position.multiplyScalar(-1);
+        pivot = new THREE.Group();
+        scene.add(pivot);
+        pivot.add(object);
     }
 
     const manager = new THREE.LoadingManager(loadModel);
@@ -95,9 +103,8 @@ function onWindowResize() {
 }
 
 function onDocumentMouseMove(event) {
-
-    mouseX = (event.clientX - windowHalfX) / 2;
-    mouseY = (event.clientY - windowHalfY) / 2;
+    mouseX = (event.clientX - windowHalfX) / windowHalfX;
+    mouseY = (event.clientY - windowHalfY) / windowHalfY;
 
 }
 
@@ -114,7 +121,10 @@ function render() {
 
     plane.rotation.z += 0.002;
     plane2.rotation.z += 0.002;
-
+    if (pivot) {
+        pivot.rotation.y = mouseX * 0.5;
+        pivot.rotation.x = mouseY * 0.5;
+    }
     renderer.render(scene, camera);
 
 }
