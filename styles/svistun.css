@@ -34,3 +34,11 @@ audio {
     bottom: 10px;
     width: calc(100% - 20px);
 }
+
+audio.active {
+    opacity: 0.3;
+}
+
+audio.active:hover {
+    opacity: 1;
+}

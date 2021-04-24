@@ -11,6 +11,9 @@ let object, plane, plane2, pivot, ball, group;
 //initialise simplex noise instance
 let noise = new SimplexNoise();
 let audio = document.getElementById("audio");
+audio.onplay = () => {
+    audio.classList.add("active");
+}
 let analyser, dataArray;
 
 init();
@@ -40,7 +43,7 @@ function init() {
     scene = new THREE.Scene();
     group = new THREE.Group();
 
-    const ambientLight = new THREE.AmbientLight(0xcccccc, 0.9);
+    const ambientLight = new THREE.AmbientLight(0xcccccc, 0.8);
     scene.add(ambientLight);
 
     const pointLight = new THREE.PointLight(0xffffff, 0.05);
